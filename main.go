@@ -56,5 +56,6 @@ func TcpServer(addr string) {
 }
 
 func main() {
-	TcpServer(":19903")
+	//TcpServer(":19903")
+	fmt.Println(string(0x7e))
 }

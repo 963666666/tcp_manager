@@ -148,7 +148,6 @@ func refMarshal(v reflect.Value, tag reflect.StructField) ([]byte, error) {
 		data = append(data, v.Bytes()...)
 	case reflect.Struct:
 		fieldCount := v.NumField()
-
 		for i := 0; i < fieldCount; i++ {
 			d, err := refMarshal(v.Field(i), v.Type().Field(i))
 			if err != nil {

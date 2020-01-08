@@ -105,8 +105,11 @@ func filterSigle(data []byte) (Message, int, error) {
 	startIndex := bytes.IndexByte(data, ProtoHeader)
 	if startIndex >= 0 {
 		usedLen = startIndex + 1
+		fmt.Println("usedLen is ", usedLen)
+		fmt.Println(data[usedLen:])
 		endIndex := bytes.IndexByte(data[usedLen:], ProtoHeader)
 		if endIndex >= 0 {
+			fmt.Printf("startIndex is %d, endIndex is %d\n", startIndex + 1, endIndex)
 			msg, err := frameParser(data[startIndex+1 : endIndex])
 			if err != nil {
 				return Message{}, endIndex, err

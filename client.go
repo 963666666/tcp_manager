@@ -15,32 +15,30 @@ func main() {
 	}
 	defer conn.Close()
 
-
-		buf := make([]byte, 0)
+	buf := make([]byte, 0)
+	for i := 0; i < 2; i ++ {
 		buf = append(buf, 0x7e)
-
-	for {
+		body := []byte{0x01, 0x01, 0x01}
 		sendData := &proto.Message{
 			HEADER: proto.Header{
 				MID: proto.Register,
-				Attr: uint16(3),
+				Attr: uint16(len(body)),
 				Version: 1,
 				PhoneNum: "131000",
 				SeqNum: uint16(0),
 			},
-			BODY: []byte{0x01, 0x01, 0x01},
+			BODY: body,
 		}
 		byteData, err := codec.Marshal(sendData)
 		if err != nil {
 			logrus.WithFields(logrus.Fields{"hello world": err.Error()}).Error("codec.Marshal err")
 		}
 		buf = append(buf, byteData...)
-		buf = append(buf, 0x7e)
 
 		fmt.Println("buf is ", buf)
 
 		_, err = conn.Write(buf)
-		fmt.Printf("hello world first: %v", len(buf))
+		fmt.Printf("hello world first: %v\n", len(buf))
 	}
 
 

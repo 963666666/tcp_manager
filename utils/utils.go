@@ -29,3 +29,30 @@ func DWord2Bytes(data uint32) []byte {
 	buff[3] = byte(data)
 	return buff
 }
+
+func HexBuffToString(hex []byte) string {
+	var ret []byte
+
+	for _, item := range hex {
+		hasc := HexToAsc((item >> 4) & 0x0F)
+		lasc := HexToAsc(item & 0x0F)
+
+		if hasc == 0 || lasc == 0 {
+			break
+		}
+
+		ret = append(ret, hasc, lasc)
+	}
+
+	return string(ret)
+}
+
+func HexToAsc(hex byte) byte {
+	var asc byte = 0
+	if hex >= 0 && hex <= 0x09 {
+		asc = hex - 0 + '0'
+	}else if hex >= 0x0a && hex <= 0x0f {
+		asc = hex - 0x0a + 'A'
+	}
+	return asc
+}

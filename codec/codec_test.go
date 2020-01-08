@@ -51,4 +51,10 @@ func TestMarshal(t *testing.T) {
 	}
 	t.Log("data: ", data)
 	t.Log("pack: ", pack)
+	uPack := &Body{}
+	_, err1 := Unmarshal(data, uPack)
+	if err1 != nil {
+		t.Errorf("Unmarshal err: %s", err1.Error())
+	}
+	t.Log("uData:", uPack)
 }

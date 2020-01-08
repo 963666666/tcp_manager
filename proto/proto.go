@@ -7,6 +7,21 @@ import (
 	"tcp_manager/utils"
 )
 
+const (
+	ProtoHeader byte = 0x7e
+
+	TermAck     uint16 = 0x0001
+	Register    uint16 = 0x0100
+	RegisterAck uint16 = 0x8100
+	Unregister  uint16 = 0x0003
+	Login       uint16 = 0x0102
+	HeartBeat   uint16 = 0x0002
+	GpsInfo     uint16 = 0x0200
+	PlatAck     uint16 = 0x8001
+	UpdateReq   uint16 = 0x8108
+	CtrlReq     uint16 = 0x8105
+)
+
 type Header struct {
 	MID       uint16
 	Attr      uint16
@@ -26,9 +41,6 @@ type Message struct {
 	BODY   []byte
 }
 
-const (
-	ProtoHeader byte = 0x7e
-)
 
 func (h *Header) IsMulti() bool {
 	if ((h.Attr >> 12) & 0x0001) > 0 {
@@ -41,7 +53,7 @@ func (h *Header) BodyLen() int {
 	return int(h.Attr & 0x03ff)
 }
 
-func MakeAttr(verFlag byte, mut bool, enc byte, lens uint64) uint64 {
+func MakeAttr(verFlag byte, mut bool, enc byte, lens uint16) uint16 {
 	attr := lens & 0x03FF
 
 	if verFlag > 0 {
@@ -52,7 +64,7 @@ func MakeAttr(verFlag byte, mut bool, enc byte, lens uint64) uint64 {
 		attr = attr & 0x2000
 	}
 
-	encMask := (uint64(enc) & 0x0007) << 10
+	encMask := (uint16(enc) & 0x0007) << 10
 	return attr + encMask
 }
 
@@ -91,7 +103,7 @@ func Filter(data []byte) ([]Message, int, error) {
 func filterSigle(data []byte) (Message, int, error) {
 	var usedLen int = 0
 	startIndex := bytes.IndexByte(data, ProtoHeader)
-	if startIndex > 0 {
+	if startIndex >= 0 {
 		usedLen = startIndex + 1
 		endIndex := bytes.IndexByte(data[usedLen:], ProtoHeader)
 		if endIndex >= 0 {
@@ -179,7 +191,7 @@ func CheckSum(data []byte) byte {
 	return sum
 }
 
-func Packer(msg Message) []byte {
+func Packer(msg *Message) []byte {
 	data := make([]byte, 0)
 	tempBytes := utils.Word2Bytes(msg.HEADER.MID)
 	data = append(data, tempBytes...)

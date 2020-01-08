@@ -29,3 +29,11 @@ replace (
 	google.golang.org/grpc => github.com/grpc/grpc-go v1.24.0
 	gopkg.in/DataDog/dd-trace-go.v1 => github.com/DataDog/dd-trace-go v1.18.0
 )
+
+require (
+	github.com/go-sql-driver/mysql v1.4.1
+	github.com/go-xorm/xorm v0.7.9
+	github.com/sirupsen/logrus v1.2.0
+	github.com/spf13/viper v1.6.1 // indirect
+	golang.org/x/tools v0.0.0-20190927191325-030b2cf1153e
+)

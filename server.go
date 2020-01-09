@@ -37,10 +37,12 @@ func recvConnMsg(conn net.Conn) {
 	for {
 		tempBuf := make([]byte, 1024)
 		n, err := conn.Read(tempBuf)
+
 		if err != nil {
 			logrus.WithFields(logrus.Fields{"network": addr.Network(), "ip": addr.String()}).Info("closed")
 			return
 		}
+
 		buf = append(buf, tempBuf[:n]...)
 		var outLog string
 		for _, val := range buf {
@@ -53,18 +55,21 @@ func recvConnMsg(conn net.Conn) {
 			logrus.WithFields(logrus.Fields{"network": addr.Network(), "ip": ipAddress}).Info("proto.Filter err")
 		}
 
+		logrus.WithFields(logrus.Fields{"msg is ": msg}).Info("unMarshal msg is ")
+
 		buf = buf[:lens]
 
 		for len(msg) > 0 {
 			sendBuf := t.Handler(msg[0])
+			conn.Write([]byte("recv success"))
 
+			logrus.WithFields(logrus.Fields{"sendBuf is ": sendBuf}).Info("sendBuf is")
 			if sendBuf != nil {
 				outLog = ""
 				for _, val := range sendBuf {
 					outLog += fmt.Sprintf("%02X", val)
 				}
 				logrus.WithFields(logrus.Fields{"data": outLog}).Info("---> ")
-
 				conn.Write(sendBuf)
 
 				msg = msg[1:]

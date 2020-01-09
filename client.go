@@ -16,7 +16,7 @@ func main() {
 	defer conn.Close()
 
 	buf := make([]byte, 0)
-	for i := 0; i < 2; i ++ {
+	for i := 0; i < 3; i ++ {
 		buf = append(buf, 0x7e)
 		body := []byte{0x01, 0x01, 0x01}
 		sendData := &proto.Message{
@@ -38,17 +38,9 @@ func main() {
 		fmt.Println("buf is ", buf)
 
 		_, err = conn.Write(buf)
-		fmt.Printf("hello world first: %v\n", len(buf))
+
 	}
-
-
-
-
-	//fmt.Printf("byteData is %v\n", byteData)
-	//var uSendData = &proto.Message{}
-	//lens, err := codec.Unmarshal(byteData, uSendData)
-	//fmt.Printf("hello lens is %d, data is %v\n", lens, uSendData)
-	//
-	//	n, err = conn.Write(byteData)
-	//	t.Logf("hello world first: %v", n)
+	readBuf := make([]byte, 1024)
+	n, err := conn.Read(readBuf)
+	fmt.Printf("hello world len is %d, value is %s\n", n, string(readBuf))
 }

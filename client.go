@@ -3,13 +3,18 @@ package main
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"io"
 	"net"
+	"os"
+	"os/signal"
 	"tcp_manager/codec"
 	"tcp_manager/proto"
+	"tcp_manager/term"
 )
 
+
 func main() {
-	conn, err := net.Dial("tcp", "192.168.1.109:19901")
+	conn, err := net.Dial("tcp", "192.168.1.111:19901")
 	if err != nil {
 		logrus.Error("net.Dial err:", err)
 	}
@@ -18,10 +23,24 @@ func main() {
 	buf := make([]byte, 0)
 	for i := 0; i < 3; i ++ {
 		buf = append(buf, 0x7e)
-		body := []byte{0x01, 0x01, 0x01}
+		gpsInfoBody := &term.GPSInfoBody{
+			WarnFlag: uint32(10),
+			State:    uint32(1),
+			Lat:      uint32(1),
+			Lng:      uint32(3),
+			Alt:      uint16(5),
+			Speed:    uint16(60),
+			Dir:      uint16(7),
+			Time:     []byte("20200110"),
+		}
+		body, err := codec.Marshal(gpsInfoBody)
+		if err != nil {
+			logrus.Error("codec.Marshal err:", err)
+		}
+
 		sendData := &proto.Message{
 			HEADER: proto.Header{
-				MID: proto.Register,
+				MID: proto.GpsInfo,
 				Attr: uint16(len(body)),
 				Version: 1,
 				PhoneNum: "131000",
@@ -38,9 +57,28 @@ func main() {
 		fmt.Println("buf is ", buf)
 
 		_, err = conn.Write(buf)
-
 	}
-	readBuf := make([]byte, 1024)
-	n, err := conn.Read(readBuf)
-	fmt.Printf("hello world len is %d, value is %s\n", n, string(readBuf))
+
+	signalChan := make(chan os.Signal)
+	signal.Notify(signalChan, os.Interrupt, os.Kill)
+
+	for {
+		readBuf := make([]byte, 1024)
+		n, err := conn.Read(readBuf)
+		if err != nil && err != io.EOF {
+			logrus.WithFields(logrus.Fields{"conn.Read err": err.Error()}).Error("err")
+			break
+		}
+
+		fmt.Printf("hello world len is %d, value is %s\n", n, string(readBuf))
+
+
+		/*select {
+		case sig := <- signalChan:
+			logrus.Error("exit sig is ", sig.String())
+			break
+		default:
+			logrus.Info("hello go running")
+		}*/
+	}
 }

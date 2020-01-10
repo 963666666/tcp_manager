@@ -20,7 +20,6 @@ func CheckError(err error) {
 }
 
 func recvConnMsg(conn net.Conn) {
-
 	buf := make([]byte, 0)
 	addr := conn.RemoteAddr()
 	logrus.WithFields(logrus.Fields{"network": addr.Network(), "ip": addr.String()}).Info("recv")
@@ -61,7 +60,6 @@ func recvConnMsg(conn net.Conn) {
 
 		for len(msg) > 0 {
 			sendBuf := t.Handler(msg[0])
-			conn.Write([]byte("recv success"))
 
 			logrus.WithFields(logrus.Fields{"sendBuf is ": sendBuf}).Info("sendBuf is")
 			if sendBuf != nil {

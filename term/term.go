@@ -3,6 +3,7 @@ package term
 import (
 	"fmt"
 	"github.com/go-xorm/xorm"
+	"github.com/sirupsen/logrus"
 	"net"
 	"strings"
 	"tcp_manager/codec"
@@ -118,7 +119,8 @@ func (t *Terminal) Handler(msg proto.Message) []byte {
 		}
 	case proto.Register:
 		sql := "insert into banners (`img_url`, `create_time`, `order`, `is_del`) values (?, ?, ?, ?)"
-		rs, _ := t.Engine.Exec(sql, "i don't know", time.Now(), 1, uint8(1))
+		location := time.Local
+		rs, _ := t.Engine.Exec(sql, "i don't know", time.Now().In(location), 1, uint8(1))
 		fmt.Println("mysql insert is ", rs)
 
 		devInfo := new(DevInfo)
@@ -127,7 +129,7 @@ func (t *Terminal) Handler(msg proto.Message) []byte {
 
 		is, _ := t.Engine.Get(devInfo)
 		if !is {
-			return []byte{}
+			return []byte("con't find this phone number")
 		}
 
 		var reg RegisterBody
@@ -183,8 +185,9 @@ func (t *Terminal) Handler(msg proto.Message) []byte {
 	case proto.GpsInfo:
 		var gpsInfo GPSInfoBody
 		_, err := codec.Unmarshal(msg.BODY, &gpsInfo)
+		logrus.Info("gpsInfo is", gpsInfo)
 		if err != nil {
-			fmt.Println("err: ", err)
+			logrus.Println("err: ", err)
 		}
 
 		gpsData := &GPSData{
@@ -222,7 +225,7 @@ func (t *Terminal) Handler(msg proto.Message) []byte {
 			AckResult:0,
 		})
 		if err != nil {
-			fmt.Println("err: ", err)
+			logrus.Println("err: ", err)
 		}
 
 		msgAck := &proto.Message{

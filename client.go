@@ -31,7 +31,7 @@ func main() {
 			Alt:      uint16(5),
 			Speed:    uint16(60),
 			Dir:      uint16(7),
-			Time:     []byte("20200110"),
+			Time:     []byte("20200111"),
 		}
 		body, err := codec.Marshal(gpsInfoBody)
 		if err != nil {

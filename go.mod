@@ -8,6 +8,8 @@ replace (
 	cloud.google.com/go/datastore => github.com/gomods/athens v0.6.1
 	cloud.google.com/go/pubsub => github.com/cskr/pubsub v1.0.2
 	contrib.go.opencensus.io/exporter/stackdriver => github.com/frodenas/stackdriver_exporter v0.6.0
+	go.etcd.io/etcd => github.com/JokeCiCi/go.etcd.io_etcd v0.0.0-20200220155442-8756286fe80e
+	go.mongodb.org/mongo-driver => github.com/mongodb/mongo-go-driver v1.3.0
 	go.opencensus.io => github.com/egymgmbh/opencensus-go-exporter-influxdb v0.0.0-20190125120553-91f0f40078a8
 	golang.org/x/crypto => github.com/golang/crypto v0.0.0-20191002192127-34f69633bfdc
 	golang.org/x/exp => github.com/golang/exp v0.0.0-20191002040644-a1355ae1e2c3
@@ -33,7 +35,7 @@ replace (
 require (
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-xorm/xorm v0.7.9
-	github.com/sirupsen/logrus v1.2.0
-	github.com/spf13/viper v1.6.1 // indirect
-	golang.org/x/tools v0.0.0-20190927191325-030b2cf1153e
+	github.com/sirupsen/logrus v1.4.2
+	github.com/spf13/pflag v1.0.3 // indirect
+	gopkg.in/yaml.v2 v2.2.4 // indirect
 )

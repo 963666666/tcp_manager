@@ -14,7 +14,7 @@ import (
 
 
 func main() {
-	conn, err := net.Dial("tcp", "192.168.1.111:19901")
+	conn, err := net.Dial("tcp", ":19901")
 	if err != nil {
 		logrus.Error("net.Dial err:", err)
 	}
